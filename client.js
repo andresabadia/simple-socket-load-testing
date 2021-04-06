@@ -2,7 +2,7 @@ const WebSocket = require("ws");
 
 const wsUrl = "ws:localhost:3011";
 const maximalWsInstances = 300;
-const timeInSec = 3;
+const timeInSec = 1;
 
 const wss = [];
 
@@ -23,7 +23,6 @@ const startSocket = (ws) => {
         const date = new Date();
         const splittedData = data.split("|");
         if (splittedData.length > 1) {
-            // console.log(parseInt(splittedData[1]));
             console.log(
                 splittedData[0] + (date.getTime() - parseInt(splittedData[1]))
             );
