@@ -4,11 +4,12 @@ const wss = new WebSocket.Server({ port: 3011 });
 
 console.log("starting server on port 3011");
 
-const noop = () => {};
+function noop() {}
 
-const heartbeat = () => {
+function heartbeat() {
+    // console.log("is getting pong in here");
     this.isAlive = true;
-};
+}
 
 wss.on("connection", (ws) => {
     // console.log("connection stablished", wss.clients);
@@ -26,20 +27,23 @@ wss.on("connection", (ws) => {
             client.send(message);
         });
         const date2 = new Date();
-        console.log("delta: " + (date2 - date1));
+        // console.log("delta: " + (date2 - date1));
     });
 });
 
 const interval = setInterval(function ping() {
+    console.log("ping them all");
     wss.clients.forEach(function each(ws) {
-        console.log("terminate that MFCKR");
-        if (ws.isAlive === false) return ws.terminate();
-
+        if (ws.isAlive === false) {
+            console.log("Terminate that MFCK");
+            return ws.terminate();
+        }
         ws.isAlive = false;
         ws.ping(noop);
     });
 }, 30000);
 
 wss.on("close", function close() {
+    console.log("close");
     clearInterval(interval);
 });

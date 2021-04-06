@@ -2,18 +2,27 @@ const WebSocket = require("ws");
 
 // const wsUrl = "ws:ec2-54-227-213-250.compute-1.amazonaws.com:3011";
 const wsUrl = "ws:localhost:3011";
-const maximalWsInstances = 300;
+const maximalWsInstances = 10;
 const timeInSec = 0.01;
 
 const wss = [];
 
-const sendUpdateLocation = (ws) => {
+createWsInstance();
+
+const interval = setInterval(() => {
+    createWsInstance();
+    if (wss.length > maximalWsInstances) {
+        clearInterval(interval);
+    }
+}, timeInSec * Math.random() * 1000);
+
+function sendUpdateLocation(ws) {
     setInterval(() => {
         ws.send("update location");
     }, 3000);
-};
+}
 
-const startSocket = (ws) => {
+function startSocket(ws) {
     ws.ws.on("open", function open() {
         const date = new Date();
         ws.ws.send("client-" + ws.id + " delay: |" + date.getTime());
@@ -31,19 +40,9 @@ const startSocket = (ws) => {
             // console.log(data);
         }
     });
-};
+}
 
-const createWsInstance = () => {
+function createWsInstance() {
     wss.push({ ws: new WebSocket(wsUrl), id: wss.length });
-    // console.log(ws.length);
     startSocket(wss[wss.length - 1]);
-};
-
-createWsInstance();
-
-const interval = setInterval(() => {
-    createWsInstance();
-    if (wss.length > maximalWsInstances) {
-        clearInterval(interval);
-    }
-}, timeInSec * Math.random() * 1000);
+}
