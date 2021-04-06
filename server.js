@@ -1,13 +1,20 @@
 const WebSocket = require("ws");
-const os = require("os");
 
 const wss = new WebSocket.Server({ port: 3011 });
 
 console.log("starting server on port 3011");
 
+const noop = () => {};
+
+const heartbeat = () => {
+    this.isAlive = true;
+};
+
 wss.on("connection", (ws) => {
     // console.log("connection stablished", wss.clients);
     let clientLength = 0;
+    ws.isAlive = true;
+    ws.on("pong", heartbeat);
     wss.clients.forEach(() => {
         clientLength++;
     });
@@ -20,6 +27,19 @@ wss.on("connection", (ws) => {
         });
         const date2 = new Date();
         console.log("delta: " + (date2 - date1));
-        console.log(os.totalmem() - os.freemem());
     });
+});
+
+const interval = setInterval(function ping() {
+    wss.clients.forEach(function each(ws) {
+        console.log("terminate that MFCKR");
+        if (ws.isAlive === false) return ws.terminate();
+
+        ws.isAlive = false;
+        ws.ping(noop);
+    });
+}, 30000);
+
+wss.on("close", function close() {
+    clearInterval(interval);
 });
