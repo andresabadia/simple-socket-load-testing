@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
 
-const wsUrl = "ws:localhost:3011";
+const wsUrl = "ws:ec2-54-227-213-250.compute-1.amazonaws.com:3011";
 const maximalWsInstances = 300;
 const timeInSec = 1;
 

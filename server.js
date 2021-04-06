@@ -1,4 +1,5 @@
 const WebSocket = require("ws");
+const os = require("os");
 
 const wss = new WebSocket.Server({ port: 3011 });
 
@@ -19,5 +20,6 @@ wss.on("connection", (ws) => {
         });
         const date2 = new Date();
         console.log("delta: " + (date2 - date1));
+        console.log(os.totalmem() - os.freemem());
     });
 });
